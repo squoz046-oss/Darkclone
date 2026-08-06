@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>🛒 Order Summary</h2>
+
+<table style="width:100%; border-collapse:collapse; margin-bottom:20px;">
+    <tr style="border-bottom:1px solid #333;">
+        <th style="text-align:left; padding:8px;">Product</th>
+        <th style="text-align:right; padding:8px;">Price</th>
+    </tr>
+    {% for p in products %}
+    <tr style="border-bottom:1px solid #222;">
+        <td style="padding:8px;">{{ p.name }}</td>
+        <td style="text-align:right; padding:8px;">${{ p.price_usd }} (B{{ "%.4f"|format(p.price_btc) }})</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<p><strong>Subtotal:</strong> ${{ total_usd }} (B{{ "%.4f"|format(total_btc - network_fee) }})</p>
+<p><strong>Network fee:</strong> B{{ "%.4f"|format(network_fee) }}</p>
+<p><strong>Total to pay:</strong> B{{ "%.4f"|format(total_btc) }} (~${{ total_usd }})</p>
+
+<hr style="border-color:#333; margin:20px 0;">
+
+<h3>Shipping Details</h3>
+<div style="display:flex; flex-wrap:wrap; gap:15px; margin-bottom:20px;">
+    <div>
+        <label>Email:</label><br>
+        <input type="email" name="email" placeholder="your@email.com" required style="width:250px;">
+    </div>
+    <div>
+        <label>Home Address:</label><br>
+        <input type="text" name="address" placeholder="Street, number, city, ZIP" required style="width:350px;">
+    </div>
+</div>
+<p style="color:#888; font-size:14px;">⚠️ Data is used only for shipping and is not stored in the system.</p>
+
+<h3>Choose Payment Method:</h3>
+<div style="display:flex; gap:15px; flex-wrap:wrap; margin:20px 0;">
+    <a href="{{ url_for('payment', crypto='BTC') }}" class="btn" style="background:#f7931a; display:inline-flex; align-items:center; gap:8px;">
+        <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.svg" style="width:20px; height:20px;"> Bitcoin (BTC)
+    </a>
+    <a href="{{ url_for('payment', crypto='ETH') }}" class="btn" style="background:#627eea; display:inline-flex; align-items:center; gap:8px;">
+        <img src="https://cryptologos.cc/logos/ethereum-eth-logo.svg" style="width:20px; height:20px;"> Ethereum (ETH)
+    </a>
+    <a href="{{ url_for('payment', crypto='LTC') }}" class="btn" style="background:#a6a6a6; display:inline-flex; align-items:center; gap:8px;">
+        <img src="https://cryptologos.cc/logos/litecoin-ltc-logo.svg" style="width:20px; height:20px;"> Litecoin (LTC)
+    </a>
+    <a href="{{ url_for('payment', crypto='XMR') }}" class="btn" style="background:#ff6600; display:inline-flex; align-items:center; gap:8px;">
+        <img src="https://cryptologos.cc/logos/monero-xmr-logo.svg" style="width:20px; height:20px;"> Monero (XMR)
+    </a>
+    <a href="{{ paypal_link }}" target="_blank" class="btn" style="background:#0070ba; display:inline-flex; align-items:center; gap:8px;">
+        <img src="https://www.paypalobjects.com/webstatic/icon/pp258.png" style="width:20px; height:20px;"> PayPal
+    </a>
+</div>
+{% endblock %}
