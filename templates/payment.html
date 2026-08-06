@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>⏳ Waiting for payment in {{ crypto }}</h2>
+<div style="background:#1a1a1a; padding:20px; border-radius:8px; margin:20px 0;">
+    <p><strong>Amount to send:</strong> {{ "%.6f"|format(amount) }} {{ crypto }}</p>
+    <p><strong>Vendor address:</strong></p>
+    <div style="background:#0d0d0d; padding:15px; border-radius:4px; word-break:break-all; font-family:monospace; border:1px solid #2a7a2a;">
+        {{ wallet }}
+    </div>
+    <p style="margin-top:10px; color:#888; font-size:14px;">
+        <span style="color:#7fff7f;">✓</span> Send the exact amount to this address.<br>
+        <span style="color:#7fff7f;">✓</span> The transaction will be confirmed within 1-3 network confirmations.<br>
+        <span style="color:#7fff7f;">✓</span> Do not send from exchange, use a private wallet.
+    </p>
+</div>
+<form action="{{ url_for('payment_success') }}" method="get">
+    <button type="submit" class="btn" style="background:#2a7a2a; font-size:18px; padding:12px 30px;">
+        ✅ Confirm Payment
+    </button>
+</form>
+<p style="color:#555; margin-top:20px; font-size:12px;">
+    ⚠️ The transaction will be verified automatically on the first network load.
+</p>
+{% endblock %}
