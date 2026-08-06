@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>{{ product.name }}</h2>
+<img src="{{ url_for('static', filename='images/' + product.image) }}" style="max-width:300px; display:block; margin:10px 0;">
+<p>{{ product.description }}</p>
+<p><strong>Price:</strong> ${{ product.price_usd }} (BTC {{ "%.4f"|format(product.price_btc) }})</p>
+<p><strong>Vendor:</strong> {{ product.vendor }} ★{{ product.rating }}</p>
+<p><strong>Category:</strong> {{ product.category }}</p>
+<form action="{{ url_for('buy', pid=product.id) }}" method="post" style="display:inline;">
+    <button type="submit" class="btn" style="background:#c0392b; font-size:18px; border:none; cursor:pointer;">Buy Now</button>
+</form>
+<a href="{{ url_for('add_cart', pid=product.id) }}" class="btn">Add to Cart</a>
+{% endblock %}
