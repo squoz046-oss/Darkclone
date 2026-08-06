@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="text-align:center; padding:40px 0;">
+    <div style="font-size:80px; color:#7fff7f;">✅</div>
+    <h2 style="color:#7fff7f;">Payment confirmed!</h2>
+    <p style="font-size:18px; margin:20px 0;">
+        Your order has been processed successfully.<br>
+        You will receive a confirmation email with your order details.
+    </p>
+    <p style="color:#888;">
+        Transaction ID: <span style="font-family:monospace;">0x7f3a9d2e8b1c4f5a6d7e8f9a0b1c2d3e4f5a6b7c</span>
+    </p>
+    <a href="{{ url_for('index') }}" class="btn" style="margin-top:20px; display:inline-block;">Back to Shop</a>
+</div>
+{% endblock %}
