@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Prepaid Cards – Large Balance</h2>
+
+<div class="badge-grid">
+    <div class="badge-item">
+        <img src="{{ url_for('static', filename='images/24h.png') }}" alt="24/7" style="width:48px; height:48px; display:block; margin:0 auto 12px;">
+        <h4>24/7 CUSTOMER SUPPORT</h4>
+        <p>E-Shop offers 24/7 support in a way that is convenient for you. Our team will give you quick and professional support and answer all your questions. You will find detailed information on our products and services on this page.</p>
+    </div>
+    <div class="badge-item">
+        <img src="{{ url_for('static', filename='images/legit.png') }}" alt="100% LEGIT" style="width:48px; height:48px; display:block; margin:0 auto 12px;">
+        <h4>100% LEGIT SHOP</h4>
+        <p>E-Shop is one of the best services since 2015. If we were not legit, there would be a lot of complaints about us. So take your time to check before you come to us. We will never scam our customers.</p>
+    </div>
+    <div class="badge-item">
+        <img src="{{ url_for('static', filename='images/delivery.png') }}" alt="QUICK DELIVERY" style="width:48px; height:48px; display:block; margin:0 auto 12px;">
+        <h4>QUICK DELIVERY</h4>
+        <p>Our customer shipping and delivery satisfaction form is a great way to make sure we meet our customers’ expectations. So at E-Shop we do our best to guarantee fast shipping and happiness.</p>
+    </div>
+    <div class="badge-item">
+        <img src="{{ url_for('static', filename='images/authentic.png') }}" alt="AUTHENTIC" style="width:48px; height:48px; display:block; margin:0 auto 12px;">
+        <h4>AUTHENTIC PRODUCTS</h4>
+        <p>We boost efficiency by providing only 100% authentic products. Every item is verified for quality and originality before being listed on our marketplace.</p>
+    </div>
+    <div class="badge-item">
+        <img src="{{ url_for('static', filename='images/guarantee.png') }}" alt="100% GUARANTEE" style="width:48px; height:48px; display:block; margin:0 auto 12px;">
+        <h4>100% GUARANTEE</h4>
+        <p>We stand behind every sale with a full guarantee. If you are not satisfied with your purchase, we offer a refund or replacement – no questions asked.</p>
+    </div>
+</div>
+
+<div class="product-grid">
+    {% for p in products %}
+    <div class="product-card">
+        <img src="{{ url_for('static', filename='images/' + p.image) }}" alt="{{ p.name }}">
+        <h4>{{ p.name }}</h4>
+        <p><strong>${{ p.price_usd }}</strong> <span style="color:#7fff7f;">(B{{ "%.4f"|format(p.price_btc) }})</span></p>
+        <p style="font-size:12px; color:#888;">Vendor: {{ p.vendor }} ★{{ p.rating }}</p>
+        <a href="{{ url_for('product', pid=p.id) }}" class="btn">See more</a>
+        <form action="{{ url_for('buy', pid=p.id) }}" method="post" style="display:inline;">
+            <button type="submit" class="btn" style="background:#c0392b; border:none; cursor:pointer;">Buy</button>
+        </form>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
