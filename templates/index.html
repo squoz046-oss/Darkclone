@@ -6,7 +6,8 @@
 <div class="product-grid">
     {% for p in products %}
     <div class="product-card">
-        <img src="{{ url_for('static', filename='images/' + p.image) }}" alt="{{ p.name }}">
+        <img src="{{ url_for('static', filename='images/' + p.image) }}" alt="{{ p.name }}" 
+             onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22100%22%3E%3Crect width=%22200%22 height=%22100%22 fill=%22%231a1a1a%22/%3E%3Ctext x=%2250%%22 y=%2250%%22 text-anchor=%22middle%22 dy=%22.35em%22 fill=%22%23555%22 font-size=%2214%22 font-family=%22sans-serif%22%3ENo Image%3C/text%3E%3C/svg%3E';">
         <h4>{{ p.name }}</h4>
         <p><strong>${{ p.price_usd }}</strong> <span style="color:#7fff7f;">(B{{ "%.4f"|format(p.price_btc) }})</span></p>
         <p style="font-size:12px; color:#888;">Vendor: {{ p.vendor }} ★{{ p.rating }}</p>
@@ -18,7 +19,7 @@
     {% endfor %}
 </div>
 
-<!-- CONTATTO TRAMITE SESSION -->
+<!-- CONTATTO TRAMITE SESSION CON FALLBACK ROBUSTO -->
 <div style="text-align:center; margin:40px 0 20px; background:#1a1a1a; padding:20px; border-radius:8px;">
     <p style="color:#aaa; font-size:14px;">Contact me securely via <strong style="color:#7fff7f;">Session</strong></p>
     <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:15px; align-items:center; margin-top:10px;">
@@ -26,21 +27,19 @@
         <input type="text" id="sessionId" value="{{ session_id }}" readonly 
                style="background:#0d0d0d; border:1px solid #333; color:#7fff7f; padding:10px; border-radius:4px; font-family:monospace; width:280px; text-align:center; font-size:14px;">
 
-        <!-- Pulsante Copia (verde) -->
         <button onclick="copySessionId()" class="btn" style="background:#2a7a2a; display:inline-flex; align-items:center; gap:6px;">
-            <img src="{{ url_for('static', filename='images/copy.png') }}" alt="Copy" style="width:20px; height:20px; filter:invert(1);">
+            <img src="{{ url_for('static', filename='images/copy.png') }}" alt="Copy" style="width:20px; height:20px; filter:invert(1);" onerror="this.style.display='none';">
             Copy
         </button>
 
-        <!-- Pulsante Condividi (blu) -->
         <button onclick="shareSessionId()" class="btn" style="background:#1a6a8a; display:inline-flex; align-items:center; gap:6px;">
-            <img src="{{ url_for('static', filename='images/share.png') }}" alt="Share" style="width:20px; height:20px; filter:invert(1);">
+            <img src="{{ url_for('static', filename='images/share.png') }}" alt="Share" style="width:20px; height:20px; filter:invert(1);" onerror="this.style.display='none';">
             Share
         </button>
 
-        <!-- Pulsante Open in Session (grigio scuro, senza viola) -->
+        <!-- PULSANTE OPEN IN SESSION CON FALLBACK MULTIPLO -->
         <button id="sessionBtn" class="btn" style="background:#3a3a5a; display:inline-flex; align-items:center; gap:6px; border:none; cursor:pointer;">
-            <img src="{{ url_for('static', filename='images/session.png') }}" alt="Session" style="width:20px; height:20px; filter:invert(1);">
+            <img src="{{ url_for('static', filename='images/session.png') }}" alt="Session" style="width:20px; height:20px; filter:invert(1);" onerror="this.style.display='none';">
             Open in Session
         </button>
     </div>
@@ -52,41 +51,45 @@
 <!-- BADGE DI FIDUCIA -->
 <div class="badge-grid">
     <div class="badge-item">
-        <img src="{{ url_for('static', filename='images/24h.png') }}" alt="24/7" style="width:48px; height:48px; display:block; margin:0 auto 12px;">
+        <img src="{{ url_for('static', filename='images/24h.png') }}" alt="24/7" style="width:48px; height:48px; display:block; margin:0 auto 12px;" onerror="this.style.display='none';">
         <h4>24/7 CUSTOMER SUPPORT</h4>
         <p>E-Shop offers 24/7 support in a way that is convenient for you. Our team will give you quick and professional support and answer all your questions. You will find detailed information on our products and services on this page.</p>
     </div>
     <div class="badge-item">
-        <img src="{{ url_for('static', filename='images/legit.png') }}" alt="100% LEGIT" style="width:48px; height:48px; display:block; margin:0 auto 12px;">
+        <img src="{{ url_for('static', filename='images/legit.png') }}" alt="100% LEGIT" style="width:48px; height:48px; display:block; margin:0 auto 12px;" onerror="this.style.display='none';">
         <h4>100% LEGIT SHOP</h4>
         <p>E-Shop is one of the best services since 2015. If we were not legit, there would be a lot of complaints about us. So take your time to check before you come to us. We will never scam our customers.</p>
     </div>
     <div class="badge-item">
-        <img src="{{ url_for('static', filename='images/delivery.png') }}" alt="QUICK DELIVERY" style="width:48px; height:48px; display:block; margin:0 auto 12px;">
+        <img src="{{ url_for('static', filename='images/delivery.png') }}" alt="QUICK DELIVERY" style="width:48px; height:48px; display:block; margin:0 auto 12px;" onerror="this.style.display='none';">
         <h4>QUICK DELIVERY</h4>
         <p>Our customer shipping and delivery satisfaction form is a great way to make sure we meet our customers’ expectations. So at E-Shop we do our best to guarantee fast shipping and happiness.</p>
     </div>
     <div class="badge-item">
-        <img src="{{ url_for('static', filename='images/authentic.png') }}" alt="AUTHENTIC" style="width:48px; height:48px; display:block; margin:0 auto 12px;">
+        <img src="{{ url_for('static', filename='images/authentic.png') }}" alt="AUTHENTIC" style="width:48px; height:48px; display:block; margin:0 auto 12px;" onerror="this.style.display='none';">
         <h4>AUTHENTIC PRODUCTS</h4>
         <p>We boost efficiency by providing only 100% authentic products. Every item is verified for quality and originality before being listed on our marketplace.</p>
     </div>
     <div class="badge-item">
-        <img src="{{ url_for('static', filename='images/guarantee.png') }}" alt="100% GUARANTEE" style="width:48px; height:48px; display:block; margin:0 auto 12px;">
+        <img src="{{ url_for('static', filename='images/guarantee.png') }}" alt="100% GUARANTEE" style="width:48px; height:48px; display:block; margin:0 auto 12px;" onerror="this.style.display='none';">
         <h4>100% GUARANTEE</h4>
         <p>We stand behind every sale with a full guarantee. If you are not satisfied with your purchase, we offer a refund or replacement – no questions asked.</p>
     </div>
 </div>
 
-<!-- JAVASCRIPT CON FALLBACK PER SESSION -->
+<!-- JAVASCRIPT POTENZIATO -->
 <script>
 function copySessionId() {
     var copyText = document.getElementById("sessionId");
     copyText.select();
     copyText.setSelectionRange(0, 99999);
     navigator.clipboard.writeText(copyText.value)
-        .then(() => alert("Session ID copied to clipboard!"))
-        .catch(() => alert("Unable to copy. Please select and copy manually."));
+        .then(() => alert("✅ Session ID copied to clipboard!"))
+        .catch(() => {
+            // Fallback manuale
+            document.execCommand('copy');
+            alert("✅ Session ID copied (manual method).");
+        });
 }
 
 function shareSessionId() {
@@ -102,28 +105,42 @@ function shareSessionId() {
     }
 }
 
-// Pulsante Open in Session con fallback
+// PULSANTE OPEN IN SESSION – TENTA 3 METODI DI FALLBACK
 document.getElementById('sessionBtn').addEventListener('click', function(e) {
     var id = document.getElementById('sessionId').value;
     var url = 'session://contact?public_key=' + encodeURIComponent(id);
     
-    // Tentativo di aprire l'app
+    // METODO 1: Tentativo con window.open
     var w = window.open(url, '_blank');
+    var opened = false;
     
-    // Se dopo 500ms la finestra è ancora aperta, significa che il protocollo non è gestito
-    setTimeout(function() {
-        if (w) {
-            w.close();
-            // Fallback: copia l'ID e mostra istruzioni
-            copySessionId();
-            alert('Session app not installed.\n\nYour ID has been copied.\nPlease open the Session app and paste it manually to start a conversation.');
-        }
-    }, 500);
-    
-    // Fallback immediato: se window.open fallisce
-    if (!w) {
+    if (w) {
+        opened = true;
+        // Se dopo 600ms la finestra è ancora aperta, chiudiamo e usiamo fallback
+        setTimeout(function() {
+            if (w && !w.closed) {
+                w.close();
+                // METODO 2: iframe nascosto (alternativa)
+                try {
+                    var iframe = document.createElement('iframe');
+                    iframe.style.display = 'none';
+                    iframe.src = url;
+                    document.body.appendChild(iframe);
+                    setTimeout(function() {
+                        document.body.removeChild(iframe);
+                    }, 1000);
+                    alert('📱 Trying to open Session app...\nIf it doesn\'t appear, copy the ID manually.');
+                } catch(e) {
+                    // METODO 3: Copia ID e mostra istruzioni
+                    copySessionId();
+                    alert('⚠️ Session app not found.\n\nYour ID has been copied.\nPlease open the Session app and paste it manually to start a conversation.');
+                }
+            }
+        }, 600);
+    } else {
+        // window.open fallito → copia ID direttamente
         copySessionId();
-        alert('Unable to open Session app.\n\nYour ID has been copied.\nPlease open the Session app and paste it manually.');
+        alert('⚠️ Unable to open Session app.\n\nYour ID has been copied.\nPlease open the Session app and paste it manually.');
     }
 });
 </script>
