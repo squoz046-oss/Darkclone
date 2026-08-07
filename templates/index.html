@@ -19,13 +19,25 @@
     {% endfor %}
 </div>
 
-<!-- CONTATTO TELEGRAM 24/7 (sopra i badge) -->
-<div style="text-align:center; margin:40px 0 20px;">
-    <a href="https://t.me/?text=Hi%2C%20,I%20need%20di%20support%20for%20my%20order%20." target="_blank">
-       style="display:inline-block; background:#0088cc; color:#fff; padding:12px 30px; border-radius:8px; text-decoration:none; font-size:18px; font-weight:bold;">
-        💬 Contact 24/7 Support on Telegram
-    </a>
-    <p style="color:#888; font-size:14px; margin-top:8px;">Reach out anytime – we're here to help</p>
+<!-- CONTATTO TRAMITE SESSION (al posto di Telegram) -->
+<div style="text-align:center; margin:40px 0 20px; background:#1a1a1a; padding:20px; border-radius:8px;">
+    <p style="color:#aaa; font-size:14px;">Contact me securely via <strong style="color:#7fff7f;">Session</strong></p>
+    <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:15px; align-items:center; margin-top:10px;">
+        <!-- ID pubblico (non modificabile) -->
+        <input type="text" id="sessionId" value="{{ session_id }}" readonly 
+               style="background:#0d0d0d; border:1px solid #333; color:#7fff7f; padding:10px; border-radius:4px; font-family:monospace; width:280px; text-align:center; font-size:14px;">
+        <!-- Pulsante copia -->
+        <button onclick="copySessionId()" class="btn" style="background:#2a7a2a;">📋 Copy</button>
+        <!-- Pulsante condivisione (Web Share API) -->
+        <button onclick="shareSessionId()" class="btn" style="background:#0070ba;">📤 Share</button>
+        <!-- Pulsante per aprire Session (schema URL) -->
+        <a href="session://contact?public_key={{ session_id }}" class="btn" style="background:#5a2a7a; display:inline-flex; align-items:center; gap:8px;">
+            <span style="font-size:20px;">🔐</span> Open in Session
+        </a>
+    </div>
+    <p style="color:#888; font-size:12px; margin-top:15px;">
+        Click <strong>"Open in Session"</strong> to start a private conversation.
+    </p>
 </div>
 
 <!-- BADGE DI FIDUCIA (spostati in fondo) -->
@@ -56,5 +68,31 @@
         <p>We stand behind every sale with a full guarantee. If you are not satisfied with your purchase, we offer a refund or replacement – no questions asked.</p>
     </div>
 </div>
+
+<!-- FUNZIONI JAVASCRIPT PER COPIA E CONDIVISIONE -->
+<script>
+function copySessionId() {
+    var copyText = document.getElementById("sessionId");
+    copyText.select();
+    copyText.setSelectionRange(0, 99999);
+    navigator.clipboard.writeText(copyText.value)
+        .then(() => alert("Session ID copied to clipboard!"))
+        .catch(() => alert("Unable to copy. Please select and copy manually."));
+}
+
+function shareSessionId() {
+    var id = document.getElementById("sessionId").value;
+    if (navigator.share) {
+        navigator.share({
+            title: 'Contact me on Session',
+            text: '🔐 Contact me securely on Session with this ID: ' + id,
+        }).catch(() => {});
+    } else {
+        // Fallback: copia e avvisa
+        copySessionId();
+        alert("Share not supported – ID copied instead.");
+    }
+}
+</script>
 
 {% endblock %}
