@@ -19,7 +19,7 @@
     {% endfor %}
 </div>
 
-<!-- CONTATTO TRAMITE SESSION – VERSIONE POTENZIATA -->
+<!-- CONTATTO SESSION CON FALLBACK -->
 <div style="text-align:center; margin:40px 0 20px; background:#1a1a1a; padding:20px; border-radius:8px;">
     <p style="color:#aaa; font-size:14px;">Contact me securely via <strong style="color:#7fff7f;">Session</strong></p>
     <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:15px; align-items:center; margin-top:10px;">
@@ -37,7 +37,6 @@
             Share
         </button>
 
-        <!-- PULSANTE OPEN IN SESSION CON FALLBACK MULTIPLO E MODALE -->
         <button id="sessionBtn" class="btn" style="background:#3a3a5a; display:inline-flex; align-items:center; gap:6px; border:none; cursor:pointer;">
             <img src="{{ url_for('static', filename='images/session.png') }}" alt="Session" style="width:20px; height:20px; filter:invert(1);" onerror="this.style.display='none';">
             Open in Session
@@ -77,7 +76,6 @@
     </div>
 </div>
 
-<!-- JAVASCRIPT AVANZATO PER SESSION -->
 <script>
 function copySessionId() {
     var copyText = document.getElementById("sessionId");
@@ -104,20 +102,19 @@ function shareSessionId() {
     }
 }
 
-// PULSANTE OPEN IN SESSION – TENTA 3 METODI
 document.getElementById('sessionBtn').addEventListener('click', function(e) {
     var id = document.getElementById('sessionId').value;
     var url = 'session://contact?public_key=' + encodeURIComponent(id);
     var opened = false;
 
-    // METODO 1: window.open
+    // Metodo 1: window.open
     var w = window.open(url, '_blank');
     if (w) {
         opened = true;
         setTimeout(function() {
             if (w && !w.closed) {
                 w.close();
-                // METODO 2: iframe nascosto
+                // Metodo 2: iframe
                 try {
                     var iframe = document.createElement('iframe');
                     iframe.style.display = 'none';
@@ -125,10 +122,7 @@ document.getElementById('sessionBtn').addEventListener('click', function(e) {
                     document.body.appendChild(iframe);
                     setTimeout(function() {
                         document.body.removeChild(iframe);
-                        // Se ancora non funziona, mostra modal di fallback
-                        if (!opened) {
-                            showFallbackModal(id);
-                        }
+                        if (!opened) showFallbackModal(id);
                     }, 800);
                 } catch(e) {
                     showFallbackModal(id);
@@ -136,33 +130,29 @@ document.getElementById('sessionBtn').addEventListener('click', function(e) {
             }
         }, 600);
     } else {
-        // window.open fallito → METODO 3: navigator
+        // Metodo 3: location.href
         try {
             window.location.href = url;
-            setTimeout(function() {
-                // Se la pagina non è cambiata, mostra fallback
-                showFallbackModal(id);
-            }, 1000);
+            setTimeout(function() { showFallbackModal(id); }, 1000);
         } catch(e) {
             showFallbackModal(id);
         }
     }
 
-    // Fallback finale: dopo 2 secondi se non è stato aperto, mostra modale
+    // Fallback dopo 2 secondi se non aperto
     setTimeout(function() {
-        if (!opened) {
-            showFallbackModal(id);
-        }
+        if (!opened) showFallbackModal(id);
     }, 2000);
 });
 
 function showFallbackModal(id) {
-    // Copia ID e mostra istruzioni con modal
     copySessionId();
     var msg = "⚠️ Unable to open Session app automatically.\n\n";
-    msg += "Your ID has been copied to your clipboard.\n";
+    msg += "Your ID has been copied to your clipboard.\n\n";
     msg += "Please open the Session app and paste this ID to start a conversation.\n\n";
-    msg += "ID: " + id;
+    msg += "ID: " + id + "\n\n";
+    msg += "If you don't have Session installed, download it here:\n";
+    msg += "https://getsession.org/download";
     alert(msg);
 }
 </script>
