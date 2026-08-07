@@ -17,6 +17,8 @@
             border: 1px solid #333;
             border-radius: 8px;
             padding: 12px;
+            width: 100%;
+            max-width: 220px;
             text-align: center;
             display: flex;
             flex-direction: column;
@@ -35,7 +37,7 @@
         .footer { text-align: center; padding: 20px; color: #555; font-size: 12px; border-top: 1px solid #222; margin-top: 30px; }
         input, textarea { background: #1a1a1a; color: #c0c0c0; border: 1px solid #333; padding: 8px; border-radius: 4px; width: 100%; max-width: 300px; margin: 5px 0; }
         form { max-width: 400px; margin: 0 auto; }
-        .logo { height: 50px; vertical-align: middle; margin-right: 15px; }
+        .logo { height: 50px; vertical-align: middle; margin-right: 15px; }  /* PIÙ GRANDE */
         .badge-grid {
             display: flex;
             flex-wrap: wrap;
@@ -65,28 +67,27 @@
             line-height: 1.6;
             margin: 5px 0 0;
         }
-
-        /* RESPONSIVE – 3 COLONNE SU MOBILE (fino a 600px) */
+        /* RESPONSIVE: su mobile 3 colonne (per larghezza >= 400px) */
         @media (max-width: 600px) {
             .header { flex-direction: column; align-items: stretch; text-align: center; }
             .header div { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
-            .product-grid { gap: 8px; }
+            .product-grid { gap: 10px; }
             .product-card {
-                width: calc(33.33% - 6px) !important;
-                max-width: none !important;
-                padding: 6px;
+                width: calc(33.33% - 7px);
+                max-width: none;
+                padding: 8px;
             }
             .product-card h4 {
-                font-size: 11px;
+                font-size: 12px;
                 margin: 4px 0 2px;
             }
             .product-card p {
-                font-size: 10px;
+                font-size: 11px;
                 margin: 2px 0;
             }
             .product-card .btn {
-                font-size: 10px;
-                padding: 4px 6px;
+                font-size: 11px;
+                padding: 4px 8px;
                 margin: 1px;
             }
             .badge-grid {
@@ -97,28 +98,15 @@
                 flex: 1 1 100%;
                 max-width: 100%;
             }
-            .logo { height: 40px; }
+            .logo { height: 40px; } /* Adatto per mobile, ma più grande di prima */
         }
-
-        /* Schermi molto piccoli (< 400px) – 2 colonne per non schiacciare */
-        @media (max-width: 399px) {
-            .product-card {
-                width: calc(50% - 5px) !important;
-            }
-        }
-
-        /* Tablet e desktop */
+        /* Per schermi medi (tablet) */
         @media (min-width: 601px) and (max-width: 900px) {
-            .product-card {
-                width: calc(33.33% - 10px);
-                max-width: none;
-            }
+            .product-card { width: calc(33.33% - 10px); max-width: none; }
         }
-        @media (min-width: 901px) {
-            .product-card {
-                width: calc(25% - 15px);
-                max-width: none;
-            }
+        /* Per schermi più piccoli (under 400px) – 2 colonne per non schiacciare */
+        @media (max-width: 399px) {
+            .product-card { width: calc(50% - 5px); }
         }
     </style>
 </head>
