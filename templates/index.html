@@ -19,20 +19,33 @@
     {% endfor %}
 </div>
 
-<!-- CONTATTO TRAMITE SESSION (al posto di Telegram) -->
+<!-- CONTATTO TRAMITE SESSION -->
 <div style="text-align:center; margin:40px 0 20px; background:#1a1a1a; padding:20px; border-radius:8px;">
     <p style="color:#aaa; font-size:14px;">Contact me securely via <strong style="color:#7fff7f;">Session</strong></p>
     <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:15px; align-items:center; margin-top:10px;">
-        <!-- ID pubblico (non modificabile) -->
+        
+        <!-- ID pubblico (sola lettura) -->
         <input type="text" id="sessionId" value="{{ session_id }}" readonly 
                style="background:#0d0d0d; border:1px solid #333; color:#7fff7f; padding:10px; border-radius:4px; font-family:monospace; width:280px; text-align:center; font-size:14px;">
-        <!-- Pulsante copia -->
-        <button onclick="copySessionId()" class="btn" style="background:#2a7a2a;">📋 Copy</button>
-        <!-- Pulsante condivisione (Web Share API) -->
-        <button onclick="shareSessionId()" class="btn" style="background:#0070ba;">📤 Share</button>
-        <!-- Pulsante per aprire Session (schema URL) -->
-        <a href="session://contact?public_key={{ session_id }}" class="btn" style="background:#5a2a7a; display:inline-flex; align-items:center; gap:8px;">
-            <span style="font-size:20px;">🔐</span> Open in Session
+
+        <!-- Pulsante Copia con icona personalizzata -->
+        <button onclick="copySessionId()" class="btn" style="background:#2a7a2a; display:inline-flex; align-items:center; gap:6px;">
+            <img src="{{ url_for('static', filename='images/copy.png') }}" alt="Copy" style="width:20px; height:20px; filter:invert(1);">
+            Copy
+        </button>
+
+        <!-- Pulsante Condividi con icona personalizzata -->
+        <button onclick="shareSessionId()" class="btn" style="background:#0070ba; display:inline-flex; align-items:center; gap:6px;">
+            <img src="{{ url_for('static', filename='images/share.png') }}" alt="Share" style="width:20px; height:20px; filter:invert(1);">
+            Share
+        </button>
+
+        <!-- Pulsante Apri in Session con icona personalizzata -->
+        <a href="session://contact?public_key={{ session_id }}" 
+           class="btn" style="background:#5a2a7a; display:inline-flex; align-items:center; gap:6px; text-decoration:none;"
+           onclick="if(!confirm('If Session does not open, copy the ID and paste it manually in the app.')) event.preventDefault();">
+            <img src="{{ url_for('static', filename='images/session.png') }}" alt="Session" style="width:20px; height:20px; filter:invert(1);">
+            Open in Session
         </a>
     </div>
     <p style="color:#888; font-size:12px; margin-top:15px;">
@@ -40,7 +53,7 @@
     </p>
 </div>
 
-<!-- BADGE DI FIDUCIA (spostati in fondo) -->
+<!-- BADGE DI FIDUCIA -->
 <div class="badge-grid">
     <div class="badge-item">
         <img src="{{ url_for('static', filename='images/24h.png') }}" alt="24/7" style="width:48px; height:48px; display:block; margin:0 auto 12px;">
@@ -69,7 +82,7 @@
     </div>
 </div>
 
-<!-- FUNZIONI JAVASCRIPT PER COPIA E CONDIVISIONE -->
+<!-- FUNZIONI JAVASCRIPT -->
 <script>
 function copySessionId() {
     var copyText = document.getElementById("sessionId");
@@ -88,7 +101,6 @@ function shareSessionId() {
             text: '🔐 Contact me securely on Session with this ID: ' + id,
         }).catch(() => {});
     } else {
-        // Fallback: copia e avvisa
         copySessionId();
         alert("Share not supported – ID copied instead.");
     }
