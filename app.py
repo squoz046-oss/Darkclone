@@ -13,6 +13,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///shop.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
+# ------------------ SESSION ID CONFIG ------------------
+SESSION_ID = "05fb4e791ad9835da25c3e0d927b56ec4ffd4694ff1a41d2319c2ded835c6adb5a"  # Il tuo ID pubblico
+
 # ------------------ CRYPTO WALLET CONFIG ------------------
 CRYPTO_WALLETS = {
     "BTC": "17b5YpKcwMejoNvoqKNcMbzKcMzKwqcVwH",
@@ -22,6 +25,11 @@ CRYPTO_WALLETS = {
 }
 NETWORK_FEE = 0.0005
 PAYPAL_LINK = "https://www.paypal.me/BotAi36"
+
+# ------------------ CONTEXT PROCESSOR (per rendere SESSION_ID disponibile in tutti i template) ------------------
+@app.context_processor
+def inject_session_id():
+    return dict(session_id=SESSION_ID)
 
 # ------------------ MODELS ------------------
 class User(db.Model):
@@ -299,6 +307,5 @@ with app.app_context():
     db.create_all()
     seed_products()
 
-# Se vuoi tenere l'avvio locale per test:
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
