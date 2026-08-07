@@ -3,7 +3,6 @@
 
 <h2>Prepaid Cards – Large Balance</h2>
 
-<!-- GRIGLIA PRODOTTI -->
 <div class="product-grid">
     {% for p in products %}
     <div class="product-card">
@@ -24,32 +23,29 @@
     <p style="color:#aaa; font-size:14px;">Contact me securely via <strong style="color:#7fff7f;">Session</strong></p>
     <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:15px; align-items:center; margin-top:10px;">
         
-        <!-- ID pubblico (sola lettura) -->
         <input type="text" id="sessionId" value="{{ session_id }}" readonly 
                style="background:#0d0d0d; border:1px solid #333; color:#7fff7f; padding:10px; border-radius:4px; font-family:monospace; width:280px; text-align:center; font-size:14px;">
 
-        <!-- Pulsante Copia con icona personalizzata -->
+        <!-- Pulsante Copia (verde) -->
         <button onclick="copySessionId()" class="btn" style="background:#2a7a2a; display:inline-flex; align-items:center; gap:6px;">
             <img src="{{ url_for('static', filename='images/copy.png') }}" alt="Copy" style="width:20px; height:20px; filter:invert(1);">
             Copy
         </button>
 
-        <!-- Pulsante Condividi con icona personalizzata -->
-        <button onclick="shareSessionId()" class="btn" style="background:#0070ba; display:inline-flex; align-items:center; gap:6px;">
+        <!-- Pulsante Condividi (blu) -->
+        <button onclick="shareSessionId()" class="btn" style="background:#1a6a8a; display:inline-flex; align-items:center; gap:6px;">
             <img src="{{ url_for('static', filename='images/share.png') }}" alt="Share" style="width:20px; height:20px; filter:invert(1);">
             Share
         </button>
 
-        <!-- Pulsante Apri in Session con icona personalizzata -->
-        <a href="session://contact?public_key={{ session_id }}" 
-           class="btn" style="background:#5a2a7a; display:inline-flex; align-items:center; gap:6px; text-decoration:none;"
-           onclick="if(!confirm('If Session does not open, copy the ID and paste it manually in the app.')) event.preventDefault();">
+        <!-- Pulsante Open in Session (grigio scuro, senza viola) -->
+        <button id="sessionBtn" class="btn" style="background:#3a3a5a; display:inline-flex; align-items:center; gap:6px; border:none; cursor:pointer;">
             <img src="{{ url_for('static', filename='images/session.png') }}" alt="Session" style="width:20px; height:20px; filter:invert(1);">
             Open in Session
-        </a>
+        </button>
     </div>
     <p style="color:#888; font-size:12px; margin-top:15px;">
-        Click <strong>"Open in Session"</strong> to start a private conversation.
+        Click <strong>"Open in Session"</strong> – if the app doesn't open, the ID will be copied automatically.
     </p>
 </div>
 
@@ -82,7 +78,7 @@
     </div>
 </div>
 
-<!-- FUNZIONI JAVASCRIPT -->
+<!-- JAVASCRIPT CON FALLBACK PER SESSION -->
 <script>
 function copySessionId() {
     var copyText = document.getElementById("sessionId");
@@ -105,6 +101,31 @@ function shareSessionId() {
         alert("Share not supported – ID copied instead.");
     }
 }
+
+// Pulsante Open in Session con fallback
+document.getElementById('sessionBtn').addEventListener('click', function(e) {
+    var id = document.getElementById('sessionId').value;
+    var url = 'session://contact?public_key=' + encodeURIComponent(id);
+    
+    // Tentativo di aprire l'app
+    var w = window.open(url, '_blank');
+    
+    // Se dopo 500ms la finestra è ancora aperta, significa che il protocollo non è gestito
+    setTimeout(function() {
+        if (w) {
+            w.close();
+            // Fallback: copia l'ID e mostra istruzioni
+            copySessionId();
+            alert('Session app not installed.\n\nYour ID has been copied.\nPlease open the Session app and paste it manually to start a conversation.');
+        }
+    }, 500);
+    
+    // Fallback immediato: se window.open fallisce
+    if (!w) {
+        copySessionId();
+        alert('Unable to open Session app.\n\nYour ID has been copied.\nPlease open the Session app and paste it manually.');
+    }
+});
 </script>
 
 {% endblock %}
